@@ -61,11 +61,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveToDisk(Bitmap resizedBitmap) {
-        File dir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "/LetterPredictor");
+//        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+//        File dir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "/LetterPredictor");
+//
+//        if (!dir.exists()) {
+//            dir.mkdirs();
+//        }
 
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
+        Log.d(MainActivity.class.getSimpleName(), "External Storage is Writable? " + isExternalStorageWritable());
+        File dir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File file = new File(dir, "letter.png");
 
         Log.d(MainActivity.class.getSimpleName(), "Saving to " + file.toString());
@@ -88,6 +92,15 @@ public class MainActivity extends AppCompatActivity {
 
     private Bitmap getResizedBitmap(Bitmap image, int bitmapWidth, int bitmapHeight) {
         return Bitmap.createScaledBitmap(image, bitmapWidth, bitmapHeight, true);
+    }
+
+    /* Checks if external storage is available for read and write */
+    private boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
     }
 
 
