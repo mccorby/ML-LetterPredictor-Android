@@ -16,14 +16,19 @@ import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
+import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Based on http://www.oodlestechnologies.com/blogs/Capture-Signature-Using-FingerPaint-in-Android
@@ -84,16 +89,18 @@ public class MainActivity extends AppCompatActivity {
                     data.getByteArrayExtra("byteArray").length);
 
             Mat tmp = new Mat(bitmap.getHeight(), bitmap.getWidth(), CvType.CV_8UC1);
-            Mat mat1 = new Mat(bitmap.getHeight(),bitmap.getWidth(),CvType.CV_8UC1);
 
+            Utils.bitmapToMat(bitmap, tmp);
+            Imgproc.cvtColor(tmp, tmp, Imgproc.COLOR_RGB2GRAY);
 
-            Imgproc.cvtColor(tmp, mat1, Imgproc.COLOR_RGB2GRAY);
+            List<Mat> matList = new ArrayList<>();
+            Core.split(tmp, matList);
 
-            Utils.matToBitmap(mat1, bitmap);
+            Utils.matToBitmap(tmp, bitmap);
             signImage.setImageBitmap(bitmap);
 
-
-            saveToDisk(getResizedBitmap(bitmap, 28, 28));
+            saveToDisk(tmp);
+//            saveToDisk(getResizedBitmap(bitmap, 28, 28));
         }
     }
 
@@ -107,6 +114,14 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "OpenCV library found inside package. Using it!");
             mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
         }
+    }
+
+    private void saveToDisk(Mat image) {
+        File dir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File file = new File(dir, "letter.png");
+        Mat newImage = new Mat();
+        Imgproc.resize(image, newImage, new Size(28, 28));
+        Highgui.imwrite(file.getAbsolutePath(), newImage);
     }
 
     private void saveToDisk(Bitmap resizedBitmap) {
