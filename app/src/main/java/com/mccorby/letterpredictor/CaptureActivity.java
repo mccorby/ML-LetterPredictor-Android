@@ -68,7 +68,7 @@ public class CaptureActivity extends AppCompatActivity {
         public signature(Context context, AttributeSet attrs) {
             super(context, attrs);
             paint.setAntiAlias(true);
-            paint.setColor(Color.BLACK);
+            paint.setColor(Color.WHITE);
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeJoin(Paint.Join.ROUND);
             paint.setStrokeWidth(STROKE_WIDTH);
