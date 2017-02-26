@@ -22,6 +22,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
+import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -58,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+    private TensorFlowInferenceInterface inferenceInterface;
+    private String modelFilename;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +71,15 @@ public class MainActivity extends AppCompatActivity {
         b1 = (Button) findViewById(R.id.getSign);
         signImage = (ImageView) findViewById(R.id.imageView1);
         b1.setOnClickListener(onButtonClick);
+
+        initTensorFlow();
+    }
+
+    private void initTensorFlow() {
+        if (inferenceInterface.initializeTensorFlow(getAssets(), modelFilename) != 0) {
+            throw new RuntimeException("TF initialization failed");
+        }
+
     }
 
     Button.OnClickListener onButtonClick = new Button.OnClickListener() {
