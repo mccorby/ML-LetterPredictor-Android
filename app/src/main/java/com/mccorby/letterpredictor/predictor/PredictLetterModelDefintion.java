@@ -1,9 +1,17 @@
 package com.mccorby.letterpredictor.predictor;
 
 public class PredictLetterModelDefintion {
+    private String[] mOutputNames;
     private int[] mInputSize;
     private String mInputName;
     private String mOutputName;
+
+    public PredictLetterModelDefintion(String inputName, String outputName, String[] outputNames, int[] inputSize) {
+        mInputName = inputName;
+        mOutputName = outputName;
+        mOutputNames = outputNames;
+        mInputSize = inputSize;
+    }
 
     public int[] getInputSize() {
         return mInputSize;
@@ -14,7 +22,7 @@ public class PredictLetterModelDefintion {
     }
 
     public String[] getOutputNames() {
-        return new String[0];
+        return mOutputNames;
     }
 
     public String getOutputName() {

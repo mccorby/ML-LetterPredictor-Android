@@ -11,6 +11,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.mccorby.letterpredictor.domain.RawImage;
+import com.mccorby.letterpredictor.predictor.PredictLetter;
+import com.mccorby.letterpredictor.predictor.PredictLetterModelDefintion;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
@@ -39,10 +44,13 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    static{ System.loadLibrary("opencv_java"); }
+    static {
+        System.loadLibrary("opencv_java");
+    }
 
     private Button b1;
     private ImageView signImage;
+    private TextView theLetter;
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -60,7 +68,8 @@ public class MainActivity extends AppCompatActivity {
         }
     };
     private TensorFlowInferenceInterface inferenceInterface;
-    private String modelFilename;
+    // TODO Model should be stored as Protobuf
+    private String modelFilename = "frozen_model.pb";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,10 +81,13 @@ public class MainActivity extends AppCompatActivity {
         signImage = (ImageView) findViewById(R.id.imageView1);
         b1.setOnClickListener(onButtonClick);
 
+        theLetter = (TextView) findViewById(R.id.the_letter);
+
         initTensorFlow();
     }
 
     private void initTensorFlow() {
+        inferenceInterface = new TensorFlowInferenceInterface();
         if (inferenceInterface.initializeTensorFlow(getAssets(), modelFilename) != 0) {
             throw new RuntimeException("TF initialization failed");
         }
@@ -111,9 +123,46 @@ public class MainActivity extends AppCompatActivity {
             Utils.matToBitmap(tmp, bitmap);
             signImage.setImageBitmap(bitmap);
 
-            saveToDisk(tmp);
+            Mat newImage = transformImage(tmp);
+
+            saveToDisk(newImage);
+
+
+            predictLetter(newImage);
+
 //            saveToDisk(getResizedBitmap(bitmap, 28, 28));
         }
+    }
+
+    private void predictLetter(Mat newImage) {
+        float[] result = new float[28*28];
+        for (int row = 0; row < newImage.rows(); row++) {
+            for (int col = 0; col < newImage.cols(); col++) {
+                double[] valueAtPixel = newImage.get(row, col);
+                result[row * 28 + col] = (float) valueAtPixel[0];
+            }
+        }
+
+        int[] inputSizes = new int[]{128, 784};
+
+        PredictLetterModelDefintion modelDefintion = new PredictLetterModelDefintion(
+                "input_node",
+                "output_node",
+                new String[]{"output_node"},
+                inputSizes
+        );
+        PredictLetter predictLetter = new PredictLetter(inferenceInterface, modelDefintion);
+
+        RawImage rawImage = new RawImage(result);
+        Character theCharacter = predictLetter.predictLetter(rawImage);
+        theLetter.setText(theCharacter.toString());
+
+    }
+
+    private Mat transformImage(Mat image) {
+        Mat newImage = new Mat();
+        Imgproc.resize(image, newImage, new Size(28, 28));
+        return newImage;
     }
 
     @Override
@@ -131,9 +180,7 @@ public class MainActivity extends AppCompatActivity {
     private void saveToDisk(Mat image) {
         File dir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File file = new File(dir, "letter.png");
-        Mat newImage = new Mat();
-        Imgproc.resize(image, newImage, new Size(28, 28));
-        Highgui.imwrite(file.getAbsolutePath(), newImage);
+        Highgui.imwrite(file.getAbsolutePath(), image);
     }
 
     private void saveToDisk(Bitmap resizedBitmap) {

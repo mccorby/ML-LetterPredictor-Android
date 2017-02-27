@@ -56,7 +56,7 @@ public class CaptureActivity extends AppCompatActivity {
     };
 
     public class signature extends View {
-        static final float STROKE_WIDTH = 10f;
+        static final float STROKE_WIDTH = 40f;
         static final float HALF_STROKE_WIDTH = STROKE_WIDTH / 2;
         Paint paint = new Paint();
         Path path = new Path();
