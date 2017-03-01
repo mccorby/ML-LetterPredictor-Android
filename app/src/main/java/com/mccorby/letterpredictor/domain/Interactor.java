@@ -1,5 +1,5 @@
 package com.mccorby.letterpredictor.domain;
 
-public interface Interactor {
-    void execute();
+public interface Interactor<T> {
+    void execute(InteractorCallback<T> callback);
 }

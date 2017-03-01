@@ -1,12 +1,12 @@
-package com.mccorby.letterpredictor.predictor;
+package com.mccorby.letterpredictor.domain;
 
-public class PredictLetterModelDefintion {
+public class PredictLetterModelDefinition {
     private String[] mOutputNames;
     private int[] mInputSize;
     private String mInputName;
     private String mOutputName;
 
-    public PredictLetterModelDefintion(String inputName, String outputName, String[] outputNames, int[] inputSize) {
+    public PredictLetterModelDefinition(String inputName, String outputName, String[] outputNames, int[] inputSize) {
         mInputName = inputName;
         mOutputName = outputName;
         mOutputNames = outputNames;

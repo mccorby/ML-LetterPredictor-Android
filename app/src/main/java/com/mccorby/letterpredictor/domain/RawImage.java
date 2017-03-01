@@ -12,4 +12,5 @@ public class RawImage {
     public float[] getValues() {
         return mValues;
     }
+
 }

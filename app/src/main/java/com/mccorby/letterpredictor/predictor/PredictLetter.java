@@ -1,54 +1,53 @@
 package com.mccorby.letterpredictor.predictor;
 
-import android.util.Log;
-
+import com.mccorby.letterpredictor.domain.PredictLetterModelDefinition;
+import com.mccorby.letterpredictor.domain.Predictor;
 import com.mccorby.letterpredictor.domain.RawImage;
 
 import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 
 
-public class PredictLetter {
+public class PredictLetter implements Predictor {
 
     public static final String TAG = PredictLetter.class.getSimpleName();
-    private TensorFlowInferenceInterface mInferenceInterface;
-    private PredictLetterModelDefintion mModel;
+    // TODO This magic numbers should come from shared config
+    private static final int BATCH_SIZE = 128;
+    private static final int IMAGE_SIZE = 28;
 
-    public PredictLetter(TensorFlowInferenceInterface inferenceInterface, PredictLetterModelDefintion model) {
+    private TensorFlowInferenceInterface mInferenceInterface;
+    private PredictLetterModelDefinition mModel;
+
+    public PredictLetter(TensorFlowInferenceInterface inferenceInterface, PredictLetterModelDefinition model) {
         mInferenceInterface = inferenceInterface;
 
         mModel = model;
     }
 
     public Character predictLetter(RawImage rawImage) {
-        // TODO Define numClasses properly
-        // https://www.tensorflow.org/extend/tool_developers/
-        // The shape of the output is [N, NUM_CLASSES], where N is the batch size.
-//        int numClasses =
-//                (int) mInferenceInterface.graph().operation(mModel.getOutputName()).output(0).shape().size(1);
-
-        float[] inputTensor = new float[128*784];
+        // Note: The size of the input tensor includes the batch size!!
+        float[] inputTensor = new float[BATCH_SIZE * IMAGE_SIZE * IMAGE_SIZE];
         for (int i = 0; i < rawImage.getValues().length; i++) {
             inputTensor[i] = rawImage.getValues()[i];
         }
 
-        Log.d(TAG, "" + inputTensor[1000]);
-
         mInferenceInterface.fillNodeFloat(mModel.getInputName(), mModel.getInputSize(), inputTensor);
         mInferenceInterface.runInference(mModel.getOutputNames());
-        // TODO Define outputs
+
         int numClasses = (int) mInferenceInterface.graph().operation(mModel.getOutputName()).output(0).shape().size(1);
-        float[] outputs = new float[128 * numClasses];
+        float[] outputs = new float[BATCH_SIZE * numClasses];
         mInferenceInterface.readNodeFloat(mModel.getOutputName(), outputs);
 
+        // TODO Refactor this into a method to calculate the best output
+        // TODO Combine it with a "evaluation" method or similar
         int idxOfMax = 0;
         for (int i = 0; i < numClasses; i++) {
-            Log.d(TAG, "tusmuertos: " + outputs[i]);
             if (outputs[i] > outputs[idxOfMax]) {
                 idxOfMax = i;
             }
         }
         int charA = (int) 'A';
         return new Character((char) (charA + idxOfMax));
-
     }
+
+
 }
