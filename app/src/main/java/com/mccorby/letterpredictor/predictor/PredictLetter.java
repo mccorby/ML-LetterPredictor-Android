@@ -39,14 +39,14 @@ public class PredictLetter implements Predictor {
 
         // TODO Refactor this into a method to calculate the best output
         // TODO Combine it with a "evaluation" method or similar
+        // TODO if confidence is too low it should return null
         int idxOfMax = 0;
         for (int i = 0; i < numClasses; i++) {
             if (outputs[i] > outputs[idxOfMax]) {
                 idxOfMax = i;
             }
         }
-        int charA = (int) 'A';
-        return new Character((char) (charA + idxOfMax));
+        return (char) ('A' + idxOfMax);
     }
 
 
