@@ -17,6 +17,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -29,4 +33,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile project(':libraries:opencv')
     compile files('libs/libandroid_tensorflow_inference_java.jar')
+    compile 'org.mockito:mockito-core:2.7.13'
 }

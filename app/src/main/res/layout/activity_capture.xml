@@ -26,8 +26,8 @@
     <LinearLayout
         android:layout_gravity="center"
         android:id="@+id/mysignature"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
+        android:layout_width="280dp"
+        android:layout_height="280dp"
         android:orientation="horizontal"
         android:background="@android:color/black">
     </LinearLayout>
