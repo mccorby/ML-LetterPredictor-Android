@@ -34,4 +34,8 @@ dependencies {
     compile project(':libraries:opencv')
     compile files('libs/libandroid_tensorflow_inference_java.jar')
     compile 'org.mockito:mockito-core:2.7.13'
+    // Dagger2 dependencies
+    compile 'com.google.dagger:dagger:2.6'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.6'
+    provided 'org.glassfish:javax.annotation:10.0-b28'
 }

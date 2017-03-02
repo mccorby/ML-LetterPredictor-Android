@@ -12,30 +12,32 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mccorby.letterpredictor.R;
-import com.mccorby.letterpredictor.domain.PredictInteractor;
-import com.mccorby.letterpredictor.domain.PredictLetterModelDefinition;
+import com.mccorby.letterpredictor.di.DaggerPredictorComponent;
+import com.mccorby.letterpredictor.di.PredictorModule;
 import com.mccorby.letterpredictor.domain.RawImage;
 import com.mccorby.letterpredictor.image.ImageProcessor;
-import com.mccorby.letterpredictor.predictor.PredictLetter;
 
 import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 
 import java.io.ByteArrayOutputStream;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+
+import javax.inject.Inject;
 
 public class PredictorActivity extends AppCompatActivity implements PredictorView {
 
     private static final String MODEL_FILE_NAME = "frozen_model.pb";
     private static final int IMAGE_SIZE = 28;
 
+    @Inject
+    PredictorPresenter mPresenter;
+    @Inject
+    ImageProcessor mImageProcessor;
+    @Inject
+    TensorFlowInferenceInterface mInferenceInterface;
+
     private ViewGroup mContent;
-    private PredictorPresenter mPresenter;
-    private TensorFlowInferenceInterface mInferenceInterface;
     private DrawingArea mDrawingArea;
     private TextView mResultView;
-
-    private ImageProcessor mImageProcessor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,30 +46,20 @@ public class PredictorActivity extends AppCompatActivity implements PredictorVie
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        injectMembers();
+
         setupViews();
         initTensorFlow();
+    }
 
-        // TODO Inject presenter
-        Executor executor = Executors.newSingleThreadExecutor();
-        int[] inputSizes = new int[]{128, 784};
-
-        // TODO These values from Shared Config
-        PredictLetterModelDefinition modelDefintion = new PredictLetterModelDefinition(
-                "input_node",
-                "output_node",
-                new String[]{"output_node"},
-                inputSizes
-        );
-
-        PredictLetter predictLetter = new PredictLetter(mInferenceInterface, modelDefintion);
-        PredictInteractor predictorInteractor = new PredictInteractor(predictLetter);
-
-        mPresenter = new PredictorPresenter(this, executor, predictorInteractor);
-        mImageProcessor = new ImageProcessor();
+    private void injectMembers() {
+        DaggerPredictorComponent.builder()
+                .predictorModule(new PredictorModule(this))
+                .build()
+                .inject(this);
     }
 
     private void initTensorFlow() {
-        mInferenceInterface = new TensorFlowInferenceInterface();
         if (mInferenceInterface.initializeTensorFlow(getAssets(), MODEL_FILE_NAME) != 0) {
             throw new RuntimeException("TF initialization failed");
         }
@@ -95,13 +87,6 @@ public class PredictorActivity extends AppCompatActivity implements PredictorVie
             }
         });
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mImageProcessor.resume(this);
-    }
-
 
     private void clearArea() {
         mDrawingArea.clear();
