@@ -19,8 +19,6 @@ import com.mccorby.letterpredictor.image.ImageProcessor;
 
 import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 
-import java.io.ByteArrayOutputStream;
-
 import javax.inject.Inject;
 
 public class PredictorActivity extends AppCompatActivity implements PredictorView {
@@ -101,6 +99,7 @@ public class PredictorActivity extends AppCompatActivity implements PredictorVie
     private Bitmap obtainInputAsBitmap() {
         Bitmap returnedBitmap = Bitmap.createBitmap(mContent.getWidth(),
                 mContent.getHeight(), Bitmap.Config.ARGB_8888);
+        // Next steps are necessary to pin the background to the image?
         Canvas canvas = new Canvas(returnedBitmap);
         Drawable bgDrawable = mContent.getBackground();
         if (bgDrawable != null) {
@@ -110,11 +109,8 @@ public class PredictorActivity extends AppCompatActivity implements PredictorVie
         }
         mContent.draw(canvas);
 
-        ByteArrayOutputStream bs = new ByteArrayOutputStream();
-        returnedBitmap.compress(Bitmap.CompressFormat.PNG, 50, bs);
         return returnedBitmap;
     }
-
 
     @Override
     public void showResult(final Character result) {
