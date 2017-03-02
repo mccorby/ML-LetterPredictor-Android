@@ -1,13 +1,23 @@
 package com.mccorby.letterpredictor.domain;
 
+import com.google.gson.annotations.SerializedName;
+
+// TODO This class should not be polluted with Gson annotations
+// TODO Provide a low level object and a mapper
 public class SharedConfig {
 
+    @SerializedName("imageSize")
     private int mImageSize;
+    @SerializedName("batchSize")
     private int mBatchSize;
+    @SerializedName("modelFileName")
     private String mModelFileName;
+    @SerializedName("outputNodeName")
     private String mOutputNodeName;
-    private String mInputNodeName;
+    @SerializedName("outputNodeNames")
     private String[] mOutputNodeNames;
+    @SerializedName("inputNodeName")
+    private String mInputNodeName;
 
     public int getImageSize() {
         return mImageSize;

@@ -2,6 +2,7 @@ package com.mccorby.letterpredictor.di;
 
 import com.mccorby.letterpredictor.domain.PredictInteractor;
 import com.mccorby.letterpredictor.domain.PredictLetterModelDefinition;
+import com.mccorby.letterpredictor.domain.SharedConfig;
 import com.mccorby.letterpredictor.image.ImageProcessor;
 import com.mccorby.letterpredictor.predictor.PredictLetter;
 import com.mccorby.letterpredictor.ui.PredictorPresenter;
@@ -27,8 +28,8 @@ public class PredictorModule {
 
     @ActivityScope
     @Provides
-    public ImageProcessor provideImageProcessor() {
-        return new ImageProcessor();
+    public ImageProcessor provideImageProcessor(SharedConfig sharedConfig) {
+        return new ImageProcessor(sharedConfig);
     }
 
     @ActivityScope
@@ -45,21 +46,22 @@ public class PredictorModule {
 
     @ActivityScope
     @Provides
-    public PredictLetterModelDefinition provideModelDefinition() {
-        // TODO These values coming from SharedConfig
-        int[] inputSizes = new int[]{128, 784};
+    public PredictLetterModelDefinition provideModelDefinition(SharedConfig sharedConfig) {
+        int imageSize = sharedConfig.getImageSize();
+        int[] inputSizes = new int[]{sharedConfig.getBatchSize(), imageSize * imageSize};
         return new PredictLetterModelDefinition(
-                "input_node",
-                "output_node",
-                new String[]{"output_node"},
+                sharedConfig.getInputNodeName(),
+                sharedConfig.getOutputNodeName(),
+                sharedConfig.getOutputNodeNames(),
                 inputSizes
         );
     }
 
     @Provides
     public PredictLetter providePredictLetter(TensorFlowInferenceInterface inferenceInterface,
-                                              PredictLetterModelDefinition modelDefinition) {
-        return new PredictLetter(inferenceInterface, modelDefinition);
+                                              PredictLetterModelDefinition modelDefinition,
+                                              SharedConfig sharedConfig) {
+        return new PredictLetter(inferenceInterface, modelDefinition, sharedConfig);
     }
 
     @Provides

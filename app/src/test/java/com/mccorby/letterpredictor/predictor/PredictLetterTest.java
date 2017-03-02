@@ -1,6 +1,7 @@
 package com.mccorby.letterpredictor.predictor;
 
 import com.mccorby.letterpredictor.domain.PredictLetterModelDefinition;
+import com.mccorby.letterpredictor.domain.SharedConfig;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,15 +17,19 @@ public class PredictLetterTest {
     private TensorFlowInferenceInterface mTensorFlowInferenceInterface;
     @Mock
     private PredictLetterModelDefinition mModelDefinition;
+    @Mock
+    private SharedConfig mockedSharedConfig;
+
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        mPredictLetter = new PredictLetter(mTensorFlowInferenceInterface, mModelDefinition);
+        mPredictLetter = new PredictLetter(mTensorFlowInferenceInterface, mModelDefinition, mockedSharedConfig);
     }
 
     @Test
     public void testPredictLetter() {
+        // TODO This has to be done with PowerMockito or new Mockito with support to mock static classes
 /*
         // Given
         Graph mockedGraph = mock(Graph.class);

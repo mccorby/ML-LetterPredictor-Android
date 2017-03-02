@@ -2,10 +2,10 @@ package com.mccorby.letterpredictor.di;
 
 import com.mccorby.letterpredictor.ui.PredictorActivity;
 
-import dagger.Component;
+import dagger.Subcomponent;
 
 @ActivityScope
-@Component(modules = PredictorModule.class)
+@Subcomponent(modules = PredictorModule.class)
 public interface PredictorComponent {
     void inject(PredictorActivity activity);
 }

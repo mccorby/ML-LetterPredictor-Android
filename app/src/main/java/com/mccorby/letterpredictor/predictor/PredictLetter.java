@@ -3,29 +3,31 @@ package com.mccorby.letterpredictor.predictor;
 import com.mccorby.letterpredictor.domain.PredictLetterModelDefinition;
 import com.mccorby.letterpredictor.domain.Predictor;
 import com.mccorby.letterpredictor.domain.RawImage;
+import com.mccorby.letterpredictor.domain.SharedConfig;
 
 import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 
 
 public class PredictLetter implements Predictor {
 
-    public static final String TAG = PredictLetter.class.getSimpleName();
-    // TODO This magic numbers should come from shared config
-    private static final int BATCH_SIZE = 128;
-    private static final int IMAGE_SIZE = 28;
-
     private TensorFlowInferenceInterface mInferenceInterface;
     private PredictLetterModelDefinition mModel;
+    private SharedConfig mSharedConfig;
 
-    public PredictLetter(TensorFlowInferenceInterface inferenceInterface, PredictLetterModelDefinition model) {
+    public PredictLetter(TensorFlowInferenceInterface inferenceInterface,
+                         PredictLetterModelDefinition model,
+                         SharedConfig sharedConfig) {
         mInferenceInterface = inferenceInterface;
 
         mModel = model;
+        mSharedConfig = sharedConfig;
     }
 
     public Character predictLetter(RawImage rawImage) {
+        int imageSize = mSharedConfig.getImageSize();
+        int batchSize = mSharedConfig.getBatchSize();
         // Note: The size of the input tensor includes the batch size!!
-        float[] inputTensor = new float[BATCH_SIZE * IMAGE_SIZE * IMAGE_SIZE];
+        float[] inputTensor = new float[batchSize * imageSize * imageSize];
         for (int i = 0; i < rawImage.getValues().length; i++) {
             inputTensor[i] = rawImage.getValues()[i];
         }
@@ -34,7 +36,7 @@ public class PredictLetter implements Predictor {
         mInferenceInterface.runInference(mModel.getOutputNames());
 
         int numClasses = (int) mInferenceInterface.graph().operation(mModel.getOutputName()).output(0).shape().size(1);
-        float[] outputs = new float[BATCH_SIZE * numClasses];
+        float[] outputs = new float[batchSize * numClasses];
         mInferenceInterface.readNodeFloat(mModel.getOutputName(), outputs);
 
         // TODO Refactor this into a method to calculate the best output
