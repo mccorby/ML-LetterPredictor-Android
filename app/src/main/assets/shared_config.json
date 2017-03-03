@@ -1,0 +1,10 @@
+{
+  "imageSize": 28,
+  "batchSize": 128,
+  "inputNodeName": "input_node",
+  "outputNodeName": "output_node",
+  "outputNodeNames": [
+    "output_node"
+  ],
+  "modelFileName": "frozen_model.pb"
+}

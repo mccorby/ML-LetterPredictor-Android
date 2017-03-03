@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.mccorby.letterpredictor.domain.RawImage;
+import com.mccorby.letterpredictor.domain.SharedConfig;
 
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
@@ -15,7 +16,6 @@ import org.opencv.imgproc.Imgproc;
 public class ImageProcessor {
 
     private static final String TAG = ImageProcessor.class.getSimpleName();
-
     static {
         if (OpenCVLoader.initDebug()) {
             Log.i(TAG, "OpenCV initialize success");
@@ -24,7 +24,16 @@ public class ImageProcessor {
         }
     }
 
-    public RawImage getImage(Bitmap bitmap, int imageSize) {
+
+    private SharedConfig mSharedConfig;
+
+    public ImageProcessor(SharedConfig sharedConfig) {
+
+        mSharedConfig = sharedConfig;
+    }
+
+    public RawImage getImage(Bitmap bitmap) {
+        int imageSize = mSharedConfig.getImageSize();
         Mat tmp = new Mat(bitmap.getHeight(), bitmap.getWidth(), CvType.CV_8UC1);
 
         Utils.bitmapToMat(bitmap, tmp);

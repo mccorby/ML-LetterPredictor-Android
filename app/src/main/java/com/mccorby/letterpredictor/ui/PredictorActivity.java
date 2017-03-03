@@ -11,9 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.mccorby.letterpredictor.LetterPredictorApp;
 import com.mccorby.letterpredictor.R;
-import com.mccorby.letterpredictor.di.DaggerPredictorComponent;
-import com.mccorby.letterpredictor.di.PredictorModule;
+import com.mccorby.letterpredictor.di.PredictorComponent;
 import com.mccorby.letterpredictor.domain.RawImage;
 import com.mccorby.letterpredictor.image.ImageProcessor;
 
@@ -24,7 +24,6 @@ import javax.inject.Inject;
 public class PredictorActivity extends AppCompatActivity implements PredictorView {
 
     private static final String MODEL_FILE_NAME = "frozen_model.pb";
-    private static final int IMAGE_SIZE = 28;
 
     @Inject
     PredictorPresenter mPresenter;
@@ -51,10 +50,8 @@ public class PredictorActivity extends AppCompatActivity implements PredictorVie
     }
 
     private void injectMembers() {
-        DaggerPredictorComponent.builder()
-                .predictorModule(new PredictorModule(this))
-                .build()
-                .inject(this);
+        PredictorComponent component = ((LetterPredictorApp) getApplication()).createPredictorComponent(this);
+        component.inject(this);
     }
 
     private void initTensorFlow() {
@@ -92,7 +89,7 @@ public class PredictorActivity extends AppCompatActivity implements PredictorVie
 
     private void guessLetter() {
         Bitmap bitmap = obtainInputAsBitmap();
-        RawImage rawImage = mImageProcessor.getImage(bitmap, IMAGE_SIZE);
+        RawImage rawImage = mImageProcessor.getImage(bitmap);
         mPresenter.predictLetter(rawImage);
     }
 
