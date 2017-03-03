@@ -4,17 +4,17 @@ import com.mccorby.letterpredictor.predictor.PredictLetter;
 
 public class PredictInteractor implements Interactor<Character> {
 
-    private PredictLetter mPredictLetter;
-    private RawImage mRawImage;
+    private PredictLetter predictLetter;
+    private RawImage rawImage;
 
     public PredictInteractor(PredictLetter predictLetter) {
 
-        mPredictLetter = predictLetter;
+        this.predictLetter = predictLetter;
     }
 
     @Override
     public void execute(InteractorCallback<Character> callback) {
-        Character result = mPredictLetter.predictLetter(mRawImage);
+        Character result = predictLetter.predictLetter(rawImage);
         if (result != null) {
             callback.onSuccess(result);
         } else {
@@ -23,6 +23,6 @@ public class PredictInteractor implements Interactor<Character> {
     }
 
     public void setRawImage(RawImage rawImage) {
-        mRawImage = rawImage;
+        this.rawImage = rawImage;
     }
 }

@@ -7,63 +7,73 @@ import com.google.gson.annotations.SerializedName;
 public class SharedConfig {
 
     @SerializedName("imageSize")
-    private int mImageSize;
+    private int imageSize;
     @SerializedName("batchSize")
-    private int mBatchSize;
+    private int batchSize;
     @SerializedName("modelFileName")
-    private String mModelFileName;
+    private String modelFileName;
     @SerializedName("outputNodeName")
-    private String mOutputNodeName;
+    private String outputNodeName;
     @SerializedName("outputNodeNames")
-    private String[] mOutputNodeNames;
+    private String[] outputNodeNames;
     @SerializedName("inputNodeName")
-    private String mInputNodeName;
+    private String inputNodeName;
+    @SerializedName("outputSize")
+    private int outputSize;
 
     public int getImageSize() {
-        return mImageSize;
+        return imageSize;
     }
 
     public void setImageSize(int imageSize) {
-        mImageSize = imageSize;
+        this.imageSize = imageSize;
     }
 
     public int getBatchSize() {
-        return mBatchSize;
+        return batchSize;
     }
 
     public void setBatchSize(int batchSize) {
-        mBatchSize = batchSize;
+        this.batchSize = batchSize;
     }
 
     public String getModelFileName() {
-        return mModelFileName;
+        return modelFileName;
     }
 
     public void setModelFileName(String modelFileName) {
-        mModelFileName = modelFileName;
+        this.modelFileName = modelFileName;
     }
 
     public String getOutputNodeName() {
-        return mOutputNodeName;
+        return outputNodeName;
     }
 
     public void setOutputNodeName(String outputNodeName) {
-        mOutputNodeName = outputNodeName;
+        this.outputNodeName = outputNodeName;
     }
 
     public String getInputNodeName() {
-        return mInputNodeName;
+        return inputNodeName;
     }
 
     public void setInputNodeName(String inputNodeName) {
-        mInputNodeName = inputNodeName;
+        this.inputNodeName = inputNodeName;
     }
 
     public String[] getOutputNodeNames() {
-        return mOutputNodeNames;
+        return outputNodeNames;
     }
 
     public void setOutputNodeNames(String[] outputNodeNames) {
-        mOutputNodeNames = outputNodeNames;
+        this.outputNodeNames = outputNodeNames;
+    }
+
+    public int getOutputSize() {
+        return outputSize;
+    }
+
+    public void setOutputSize(int outputSize) {
+        this.outputSize = outputSize;
     }
 }

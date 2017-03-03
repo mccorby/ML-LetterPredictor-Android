@@ -26,15 +26,15 @@ public class PredictorActivity extends AppCompatActivity implements PredictorVie
     private static final String MODEL_FILE_NAME = "frozen_model.pb";
 
     @Inject
-    PredictorPresenter mPresenter;
+    PredictorPresenter presenter;
     @Inject
-    ImageProcessor mImageProcessor;
+    ImageProcessor imageProcessor;
     @Inject
-    TensorFlowInferenceInterface mInferenceInterface;
+    TensorFlowInferenceInterface inferenceInterface;
 
-    private ViewGroup mContent;
-    private DrawingArea mDrawingArea;
-    private TextView mResultView;
+    private ViewGroup contentView;
+    private DrawingArea drawingArea;
+    private TextView resultView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,18 +55,18 @@ public class PredictorActivity extends AppCompatActivity implements PredictorVie
     }
 
     private void initTensorFlow() {
-        if (mInferenceInterface.initializeTensorFlow(getAssets(), MODEL_FILE_NAME) != 0) {
+        if (inferenceInterface.initializeTensorFlow(getAssets(), MODEL_FILE_NAME) != 0) {
             throw new RuntimeException("TF initialization failed");
         }
 
     }
 
     private void setupViews() {
-        mContent = (ViewGroup) findViewById(R.id.drawing_area);
-        mDrawingArea = new DrawingArea(this);
-        mContent.addView(mDrawingArea);
+        contentView = (ViewGroup) findViewById(R.id.drawing_area);
+        drawingArea = new DrawingArea(this);
+        contentView.addView(drawingArea);
 
-        mResultView = (TextView) findViewById(R.id.prediction_result);
+        resultView = (TextView) findViewById(R.id.prediction_result);
 
         findViewById(R.id.guess_btn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,27 +84,27 @@ public class PredictorActivity extends AppCompatActivity implements PredictorVie
     }
 
     private void clearArea() {
-        mDrawingArea.clear();
+        drawingArea.clear();
     }
 
     private void guessLetter() {
         Bitmap bitmap = obtainInputAsBitmap();
-        RawImage rawImage = mImageProcessor.getImage(bitmap);
-        mPresenter.predictLetter(rawImage);
+        RawImage rawImage = imageProcessor.getImage(bitmap);
+        presenter.predictLetter(rawImage);
     }
 
     private Bitmap obtainInputAsBitmap() {
-        Bitmap returnedBitmap = Bitmap.createBitmap(mContent.getWidth(),
-                mContent.getHeight(), Bitmap.Config.ARGB_8888);
+        Bitmap returnedBitmap = Bitmap.createBitmap(contentView.getWidth(),
+                contentView.getHeight(), Bitmap.Config.ARGB_8888);
         // Next steps are necessary to pin the background to the image?
         Canvas canvas = new Canvas(returnedBitmap);
-        Drawable bgDrawable = mContent.getBackground();
+        Drawable bgDrawable = contentView.getBackground();
         if (bgDrawable != null) {
             bgDrawable.draw(canvas);
         } else {
             canvas.drawColor(Color.WHITE);
         }
-        mContent.draw(canvas);
+        contentView.draw(canvas);
 
         return returnedBitmap;
     }
@@ -114,7 +114,7 @@ public class PredictorActivity extends AppCompatActivity implements PredictorVie
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mResultView.setText(result.toString());
+                resultView.setText(result.toString());
             }
         });
     }

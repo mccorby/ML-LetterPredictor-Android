@@ -1,31 +1,39 @@
 package com.mccorby.letterpredictor.domain;
 
 public class PredictLetterModelDefinition {
-    private String[] mOutputNames;
-    private int[] mInputSize;
-    private String mInputName;
-    private String mOutputName;
 
-    public PredictLetterModelDefinition(String inputName, String outputName, String[] outputNames, int[] inputSize) {
-        mInputName = inputName;
-        mOutputName = outputName;
-        mOutputNames = outputNames;
-        mInputSize = inputSize;
+    private int[] inputSize;
+    private String inputName;
+    private String outputName;
+    private String[] outputNames;
+    private int outputSize;
+
+    public PredictLetterModelDefinition(String inputName, String outputName, String[] outputNames,
+                                        int[] inputSize, int outputSize) {
+        this.inputName = inputName;
+        this.outputName = outputName;
+        this.outputNames = outputNames;
+        this.inputSize = inputSize;
+        this.outputSize = outputSize;
     }
 
     public int[] getInputSize() {
-        return mInputSize;
+        return inputSize;
     }
 
     public String getInputName() {
-        return mInputName;
+        return inputName;
     }
 
     public String[] getOutputNames() {
-        return mOutputNames;
+        return outputNames;
     }
 
     public String getOutputName() {
-        return mOutputName;
+        return outputName;
+    }
+
+    public int getOutputSize() {
+        return outputSize;
     }
 }

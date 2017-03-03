@@ -10,34 +10,34 @@ import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 
 public class PredictLetter implements Predictor {
 
-    private TensorFlowInferenceInterface mInferenceInterface;
-    private PredictLetterModelDefinition mModel;
-    private SharedConfig mSharedConfig;
+    private TensorFlowInferenceInterface inferenceInterface;
+    private PredictLetterModelDefinition modelDefinition;
+    private SharedConfig sharedConfig;
 
     public PredictLetter(TensorFlowInferenceInterface inferenceInterface,
                          PredictLetterModelDefinition model,
                          SharedConfig sharedConfig) {
-        mInferenceInterface = inferenceInterface;
+        this.inferenceInterface = inferenceInterface;
 
-        mModel = model;
-        mSharedConfig = sharedConfig;
+        modelDefinition = model;
+        this.sharedConfig = sharedConfig;
     }
 
     public Character predictLetter(RawImage rawImage) {
-        int imageSize = mSharedConfig.getImageSize();
-        int batchSize = mSharedConfig.getBatchSize();
+        int imageSize = sharedConfig.getImageSize();
+        int batchSize = sharedConfig.getBatchSize();
         // Note: The size of the input tensor includes the batch size!!
         float[] inputTensor = new float[batchSize * imageSize * imageSize];
         for (int i = 0; i < rawImage.getValues().length; i++) {
             inputTensor[i] = rawImage.getValues()[i];
         }
 
-        mInferenceInterface.fillNodeFloat(mModel.getInputName(), mModel.getInputSize(), inputTensor);
-        mInferenceInterface.runInference(mModel.getOutputNames());
+        inferenceInterface.fillNodeFloat(modelDefinition.getInputName(), modelDefinition.getInputSize(), inputTensor);
+        inferenceInterface.runInference(modelDefinition.getOutputNames());
 
-        int numClasses = (int) mInferenceInterface.graph().operation(mModel.getOutputName()).output(0).shape().size(1);
+        int numClasses = sharedConfig.getOutputSize();
         float[] outputs = new float[batchSize * numClasses];
-        mInferenceInterface.readNodeFloat(mModel.getOutputName(), outputs);
+        inferenceInterface.readNodeFloat(modelDefinition.getOutputName(), outputs);
 
         // TODO Refactor this into a method to calculate the best output
         // TODO Combine it with a "evaluation" method or similar

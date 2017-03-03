@@ -12,17 +12,17 @@ import com.mccorby.letterpredictor.ui.PredictorView;
 
 public class LetterPredictorApp extends Application {
 
-    private ApplicationComponent mApplicationComponent;
+    private ApplicationComponent applicationComponent;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        mApplicationComponent = DaggerApplicationComponent.builder()
+        applicationComponent = DaggerApplicationComponent.builder()
                 .applicationModule(new ApplicationModule(this)).build();
     }
 
     public PredictorComponent createPredictorComponent(PredictorView view) {
-        return mApplicationComponent.plus(new PredictorModule(view));
+        return applicationComponent.plus(new PredictorModule(view));
     }
 }

@@ -25,15 +25,15 @@ public class ImageProcessor {
     }
 
 
-    private SharedConfig mSharedConfig;
+    private SharedConfig sharedConfig;
 
     public ImageProcessor(SharedConfig sharedConfig) {
 
-        mSharedConfig = sharedConfig;
+        this.sharedConfig = sharedConfig;
     }
 
     public RawImage getImage(Bitmap bitmap) {
-        int imageSize = mSharedConfig.getImageSize();
+        int imageSize = sharedConfig.getImageSize();
         Mat tmp = new Mat(bitmap.getHeight(), bitmap.getWidth(), CvType.CV_8UC1);
 
         Utils.bitmapToMat(bitmap, tmp);

@@ -19,11 +19,11 @@ import dagger.Provides;
 @Module
 public class PredictorModule {
 
-    private PredictorView mView;
+    private PredictorView view;
 
     public PredictorModule(PredictorView view) {
 
-        mView = view;
+        this.view = view;
     }
 
     @ActivityScope
@@ -53,7 +53,8 @@ public class PredictorModule {
                 sharedConfig.getInputNodeName(),
                 sharedConfig.getOutputNodeName(),
                 sharedConfig.getOutputNodeNames(),
-                inputSizes
+                inputSizes,
+                sharedConfig.getOutputSize()
         );
     }
 
@@ -71,6 +72,6 @@ public class PredictorModule {
 
     @Provides
     PredictorPresenter providePredictorPresenter(Executor executor, PredictInteractor predictInteractor) {
-        return new PredictorPresenter(mView, executor, predictInteractor);
+        return new PredictorPresenter(view, executor, predictInteractor);
     }
 }

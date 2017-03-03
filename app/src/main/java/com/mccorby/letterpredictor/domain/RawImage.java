@@ -2,15 +2,15 @@ package com.mccorby.letterpredictor.domain;
 
 public class RawImage {
 
-    private float[] mValues;
+    private float[] values;
 
     public RawImage(float[] values) {
 
-        mValues = values;
+        this.values = values;
     }
 
     public float[] getValues() {
-        return mValues;
+        return values;
     }
 
 }

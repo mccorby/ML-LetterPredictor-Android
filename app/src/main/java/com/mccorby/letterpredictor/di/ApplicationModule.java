@@ -21,17 +21,17 @@ import dagger.Provides;
 @Module
 public class ApplicationModule {
 
-    private Context mContext;
+    private Context context;
 
     public ApplicationModule(Context context) {
 
-        mContext = context;
+        this.context = context;
     }
 
     @Singleton
     @Provides
     public Context provideContext() {
-        return mContext;
+        return context;
     }
 
     @Singleton
