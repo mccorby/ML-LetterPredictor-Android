@@ -15,17 +15,10 @@
     tools:showIn="@layout/activity_predictor">
 
     <LinearLayout
-        android:id="@+id/drawing_area"
-        style="@style/DrawingArea"
-        android:layout_centerHorizontal="true"
-        android:orientation="horizontal">
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/buttons_wrapper"
+        android:id="@+id/drawing_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/drawing_area">
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/guess_btn"
@@ -33,6 +26,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.1"
             android:text="@string/guess"/>
+
+        <LinearLayout
+            android:id="@+id/drawing_area"
+            style="@style/DrawingArea"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal">
+        </LinearLayout>
 
         <Button
             android:id="@+id/clear_btn"
@@ -42,12 +42,13 @@
             android:text="@string/clear"/>
     </LinearLayout>
 
+
     <TextView
         android:id="@+id/prediction_result"
         style="@style/ResultText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/buttons_wrapper"
+        android:layout_below="@id/drawing_wrapper"
         android:layout_centerHorizontal="true"
         tools:text="A"
         />

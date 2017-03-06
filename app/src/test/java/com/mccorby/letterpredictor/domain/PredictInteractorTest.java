@@ -29,7 +29,7 @@ public class PredictInteractorTest {
     @Test
     public void testExecuteNoError() throws Exception {
         // Given
-        Character result = new Character('A');
+        Character result = 'A';
         when(mockPredictLetter.predictLetter(mockRawImage)).thenReturn(result);
         when(mockRawImage.getValues()).thenReturn(new float[]{});
 
