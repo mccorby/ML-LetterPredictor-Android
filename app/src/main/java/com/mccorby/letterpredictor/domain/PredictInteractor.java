@@ -1,20 +1,18 @@
 package com.mccorby.letterpredictor.domain;
 
-import com.mccorby.letterpredictor.predictor.PredictLetter;
-
 public class PredictInteractor implements Interactor<Character> {
 
-    private PredictLetter predictLetter;
+    private Predictor predictor;
     private RawImage rawImage;
 
-    public PredictInteractor(PredictLetter predictLetter) {
+    public PredictInteractor(Predictor predictor) {
 
-        this.predictLetter = predictLetter;
+        this.predictor = predictor;
     }
 
     @Override
     public void execute(InteractorCallback<Character> callback) {
-        Character result = predictLetter.predictLetter(rawImage);
+        Character result = predictor.predictLetter(rawImage);
         if (result != null) {
             callback.onSuccess(result);
         } else {

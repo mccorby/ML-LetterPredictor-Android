@@ -7,5 +7,5 @@
     "output_node"
   ],
   "outputSize": 10,
-  "modelFileName": "frozen_model.pb"
+  "modelFileName": "digit_classifier.pb"
 }

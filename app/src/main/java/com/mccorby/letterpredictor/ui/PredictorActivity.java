@@ -15,6 +15,7 @@ import com.mccorby.letterpredictor.LetterPredictorApp;
 import com.mccorby.letterpredictor.R;
 import com.mccorby.letterpredictor.di.PredictorComponent;
 import com.mccorby.letterpredictor.domain.RawImage;
+import com.mccorby.letterpredictor.domain.SharedConfig;
 import com.mccorby.letterpredictor.image.ImageProcessor;
 
 import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
@@ -23,14 +24,14 @@ import javax.inject.Inject;
 
 public class PredictorActivity extends AppCompatActivity implements PredictorView {
 
-    private static final String MODEL_FILE_NAME = "frozen_model.pb";
-
     @Inject
     PredictorPresenter presenter;
     @Inject
     ImageProcessor imageProcessor;
     @Inject
     TensorFlowInferenceInterface inferenceInterface;
+    @Inject
+    SharedConfig sharedConfig;
 
     private ViewGroup contentView;
     private DrawingArea drawingArea;
@@ -46,19 +47,11 @@ public class PredictorActivity extends AppCompatActivity implements PredictorVie
         injectMembers();
 
         setupViews();
-        initTensorFlow();
     }
 
     private void injectMembers() {
         PredictorComponent component = ((LetterPredictorApp) getApplication()).createPredictorComponent(this);
         component.inject(this);
-    }
-
-    private void initTensorFlow() {
-        if (inferenceInterface.initializeTensorFlow(getAssets(), MODEL_FILE_NAME) != 0) {
-            throw new RuntimeException("TF initialization failed");
-        }
-
     }
 
     private void setupViews() {

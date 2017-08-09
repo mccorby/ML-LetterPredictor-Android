@@ -1,10 +1,13 @@
 package com.mccorby.letterpredictor.di;
 
+import android.content.res.AssetManager;
+
 import com.mccorby.letterpredictor.domain.PredictInteractor;
 import com.mccorby.letterpredictor.domain.PredictLetterModelDefinition;
 import com.mccorby.letterpredictor.domain.SharedConfig;
 import com.mccorby.letterpredictor.image.ImageProcessor;
 import com.mccorby.letterpredictor.predictor.PredictLetter;
+import com.mccorby.letterpredictor.predictor.PredictNumber;
 import com.mccorby.letterpredictor.ui.PredictorPresenter;
 import com.mccorby.letterpredictor.ui.PredictorView;
 
@@ -34,8 +37,8 @@ public class PredictorModule {
 
     @ActivityScope
     @Provides
-    public TensorFlowInferenceInterface provideInferenceInterface() {
-        return new TensorFlowInferenceInterface();
+    public TensorFlowInferenceInterface provideInferenceInterface(AssetManager assetManager, SharedConfig sharedConfig) {
+        return new TensorFlowInferenceInterface(assetManager, sharedConfig.getModelFileName());
     }
 
     @ActivityScope
@@ -66,8 +69,15 @@ public class PredictorModule {
     }
 
     @Provides
-    public PredictInteractor providePredictInteractor(PredictLetter predictLetter) {
-        return new PredictInteractor(predictLetter);
+    public PredictNumber providePredictNumber(TensorFlowInferenceInterface inferenceInterface,
+                                              PredictLetterModelDefinition modelDefinition,
+                                              SharedConfig sharedConfig) {
+        return new PredictNumber(inferenceInterface, modelDefinition, sharedConfig);
+    }
+
+    @Provides
+    public PredictInteractor providePredictInteractor(PredictNumber predictor) {
+        return new PredictInteractor(predictor);
     }
 
     @Provides
