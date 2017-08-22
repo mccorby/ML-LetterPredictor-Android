@@ -33,10 +33,7 @@ public class PredictNumber implements Predictor {
         int batchSize = sharedConfig.getBatchSize();
         // Note: The size of the input tensor includes the batch size!!
         int inputSize = batchSize * imageSize * imageSize;
-        float[] inputTensor = new float[inputSize];
-        for (int i = 0; i < rawImage.getValues().length; i++) {
-            inputTensor[i] = rawImage.getValues()[i];
-        }
+        float[] inputTensor = getInputTensor(rawImage, inputSize);
 
         Operation operation = inferenceInterface.graphOperation(modelDefinition.getOutputName());
         Log.d(TAG, "Output shape " + operation.output(0).shape());
@@ -51,17 +48,33 @@ public class PredictNumber implements Predictor {
         float[] outputs = new float[batchSize * numClasses];
         inferenceInterface.fetch(modelDefinition.getOutputName(), outputs);
 
+        int result = argmax(outputs, numClasses);
+
+        Log.d(TAG, "Number classified " + result);
+        return Character.forDigit(result, 10);
+    }
+
+    private int argmax(float[] outputs, int numClasses) {
         // TODO Refactor this into a method to calculate the best output
         // TODO Combine it with a "evaluation" method or similar
         // TODO if confidence is too low it should return null
+
         int idxOfMax = 0;
         for (int i = 0; i < numClasses; i++) {
+            Log.i(TAG, "Digit " + i + " predicted with a " + (outputs[i]/100) + "%");
             if (outputs[i] > outputs[idxOfMax]) {
                 idxOfMax = i;
             }
         }
-        Log.d(TAG, "Number classified " + idxOfMax);
-        return Character.forDigit(idxOfMax, 10);
+        return idxOfMax;
+    }
+
+    private float[] getInputTensor(RawImage rawImage, int inputSize) {
+        float[] inputTensor = new float[inputSize];
+        for (int i = 0; i < rawImage.getValues().length; i++) {
+            inputTensor[i] = rawImage.getValues()[i];
+        }
+        return inputTensor;
     }
 
 
